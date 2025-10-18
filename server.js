@@ -3,13 +3,13 @@ import exp from 'express'
 import telbot from 'node-telegram-bot-api'
 const app = exp()
 import jsdom from 'jsdom'
-
+import fs from "node:fs"
 const { JSDOM } = jsdom
 
 import puppeteer from 'puppeteer'
 
-
-const token = process.env.TOKEN
+process.loadEnvFile(".env")
+let token = process.env.TOKEN
 
 const bot = new telbot(token, {
     polling: true
@@ -43,11 +43,6 @@ let html = `
                 <th>DATE</th>
                 <th>VESSEL NAME</th>
                 <th>JETTY NUMBERS</th>
-            </tr>
-            <tr>
-                <td>1404.10.25</td>
-                <td>GOING</td>
-                <td>12345</td>
             </tr>
         </table>
     </div>
@@ -96,6 +91,7 @@ let style = ` * {
             }
         }`
 
+        
 bot.on("message", msg => {
     let dom = new JSDOM(html)
     const styleTag = dom.window.document.createElement("style");
@@ -118,7 +114,12 @@ bot.on("message", msg => {
         }))
 
         screenShot(dom).then(() => {
-            console.log(true)
+            fs.readFile("table.png", (err, data) => {
+                if (!err) {
+                    return bot.sendPhoto(msg.from.id,data)
+                }
+                bot.sendMessage(msg.from.id,"try again!")
+            })
         }).catch(err => console.log(`err : ${err}`))
     }
     async function screenShot(pageElements) {
