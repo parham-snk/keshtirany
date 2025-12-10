@@ -1,5 +1,5 @@
 import exp from 'express'
-// const mysql = require("mysql2/promise.js")
+
 import telbot from 'node-telegram-bot-api'
 const app = exp()
 import jsdom from 'jsdom'
@@ -8,7 +8,6 @@ const { JSDOM } = jsdom
 
 import puppeteer from 'puppeteer'
 
-process.loadEnvFile(".env")
 let token = process.env.TOKEN
 
 const bot = new telbot(token, {

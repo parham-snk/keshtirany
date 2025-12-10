@@ -1,0 +1,20 @@
+name: CI
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: fetch files
+      uses: actions/checkout@v4
+    - name: setup node
+      uses: actions/setup-node@v4
+    - name: cache
+      uses: actions/cache@v4
+      with:
+        path: node_modules
+        key: npm-${{ hashFiles('package-lock.json') }}
+    - name: install packages
+      run: npm install 
